@@ -3,18 +3,15 @@ using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
-    private GameObject _goalText;
+    [SerializeField]
+    private GameObject goalImage;
+    [SerializeField]
+    private GameObject goalText;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _goalText = GameObject.Find("GoalText");
-
-        if (!_goalText)
-        {
-            Debug.LogError("No goal text found");
-        }
-        
-        _goalText.SetActive(false);
+        goalImage.SetActive(false);
+        goalText.SetActive(false);
     }
 
     private void OnEnable()
@@ -29,7 +26,13 @@ public class UIController : MonoBehaviour
 
     private void HandleGoalReached()
     {
-        _goalText.SetActive(true);
+        goalImage.SetActive(true);
+        Invoke(nameof(DeactivateImage), 1f);
+    }
+
+    private void DeactivateImage()
+    {
+        goalImage.SetActive(false);
     }
     
 }

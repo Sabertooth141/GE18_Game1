@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 1614933686085741054}
   - component: {fileID: 7778243932099812561}
   m_Layer: 0
-  m_Name: Wall
-  m_TagString: Untagged
+  m_Name: WallSegment
+  m_TagString: WallSegment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -67,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f256a1d2013480644bd980cebd58c9b0, type: 2}
+  - {fileID: 2100000, guid: 3f75f3571b6c6474db18c73cd3204106, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 8553687109756243115}
   m_Layer: 0
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: WallSegment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -156,3 +156,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63b4d38cd3be7ef44ab409de0c024942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  wallSegment: {fileID: 2693323362812943335}

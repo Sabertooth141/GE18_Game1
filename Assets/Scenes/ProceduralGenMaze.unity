@@ -555,8 +555,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 092ac67ea38ba184d8402c565d561c80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  mapWidth: 10
-  mapHeight: 10
+  mapWidth: 100
+  mapHeight: 100
   jumpDistance: 2
   levelToGen: 2
   wallSpawnHeight: 140

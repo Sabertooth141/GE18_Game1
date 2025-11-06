@@ -106,7 +106,7 @@ public class ProceduralMazeGen : MonoBehaviour
         }
 
         // _map[mapHeight - 2, mapWidth - 3] = 3;
-        _map[mapHeight - 1, mapWidth - 3] = 3;
+        _map[mapHeight - 1, mapWidth - 2] = 3;
 
         int newWallcnt = CountWalls();
 
