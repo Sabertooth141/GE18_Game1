@@ -19,6 +19,7 @@ public class FPSMovement : MonoBehaviour
     public InputAction lookAction;
 
     private bool _canMove = false;
+    private bool _firstFall = true;
 
     private Vector2 _moveInput;
     private Vector2 _lookInput;
@@ -26,13 +27,17 @@ public class FPSMovement : MonoBehaviour
     private void OnEnable()
     {
         moveAction.Enable();
-        lookAction.Enable();    
+        lookAction.Enable();
+
+        GameEvents.OnPlayerEnterGoal += HandleGoalReached;
     }
 
     private void OnDisable()
     {
         moveAction.Disable();
         lookAction.Disable();
+
+        GameEvents.OnPlayerEnterGoal -= HandleGoalReached;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -52,18 +57,34 @@ public class FPSMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_playerController.isGrounded && !_canMove)
+        if (_playerController.isGrounded && _firstFall)
         {
+            _firstFall = false;
             _canMove = true;
         }
+
         HandleMovement();
         HandleLook();
     }
 
+    private void HandleGoalReached()
+    {
+        _canMove = false;
+        _velocity = Vector3.zero;
+    }
+
     private void HandleMovement()
     {
-        Vector3 move = transform.right * _moveInput.x + transform.forward * _moveInput.y;
-        _playerController.Move(move * moveSpeed * Time.deltaTime);
+        if (_canMove)
+        {
+            Vector3 move = transform.right * _moveInput.x + transform.forward * _moveInput.y;
+            _playerController.Move(move * moveSpeed * Time.deltaTime);
+        }
+        else
+        {
+            _velocity.x = 0;
+            _velocity.z = 0;
+        }
 
         if (_playerController.isGrounded && _velocity.y < 0)
         {
@@ -89,7 +110,12 @@ public class FPSMovement : MonoBehaviour
     public void OnMove(InputValue value)
     {
         if (!_canMove)
+        {
+            _velocity.x = 0;
+            _velocity.z = 0;
             return;
+        }
+
         _moveInput = value.Get<Vector2>();
     }
 

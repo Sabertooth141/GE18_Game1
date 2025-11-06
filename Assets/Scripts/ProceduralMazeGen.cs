@@ -9,7 +9,7 @@ public class ProceduralMazeGen : MonoBehaviour
     public int mapWidth;
     public int mapHeight;
     public int jumpDistance = 2;
-    public int leveltoGen = 2;
+    public int levelToGen = 2;
 
     public int wallSpawnHeight = 100;
     public int floorSpawnHeight = 0;
@@ -21,23 +21,34 @@ public class ProceduralMazeGen : MonoBehaviour
     public GameObject wallPrefab;
     public GameObject floorPrefab;
     public GameObject playerPrefab;
+    public GameObject goalPrefab;
 
     private int[,] _map;
     private List<Vector3> _wallPositions = new();
+    private List<GameObject> _wallObjects = new();
+
+    private int _targetWallCnt = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        // mapWidth = (int)floor.transform.localScale.x;
-        // mapHeight = (int)floor.transform.localScale.z;
+        if (mapWidth % 2 == 0)
+        {
+            mapWidth++;
+        }
 
-        MazeGen();
-        // Debug.Log("21");
+        if (mapHeight % 2 == 0)
+        {
+            mapHeight++;
+        }
+        
+        MazeGen(new Vector2Int(1, 1));
         DrawMap();
     }
 
-    private void MazeGen()
+    private void MazeGen(Vector2Int start)
     {
+        int oldCnt = _targetWallCnt;
         _map = new int[mapHeight, mapWidth];
         System.Random random = new System.Random();
 
@@ -58,8 +69,8 @@ public class ProceduralMazeGen : MonoBehaviour
         };
 
         Stack<Vector2Int> path = new();
-        path.Push(new Vector2Int(1, 1));
-        _map[1, 1] = 0;
+        path.Push(start);
+        _map[start.y, start.x] = 0;
 
         while (path.Count > 0)
         {
@@ -83,15 +94,8 @@ public class ProceduralMazeGen : MonoBehaviour
                 int newY = current.y + chosen.y;
                 int newX = current.x + chosen.x;
 
-                // for (int i = 1; i <= jumpDistance; i++)
-                // {
-                //     int carveY = current.y + (chosen.y / jumpDistance) * i;
-                //     int carveX = current.x + (chosen.x / jumpDistance) * i;
-                //     _map[carveY, carveX] = 0;
-                // }
                 _map[(current.y + newY) / 2, (current.x + newX) / 2] = 0;
                 _map[newY, newX] = 0;
-                // CarvePaths(current.x, current.y, newX, newY);
 
                 path.Push(new Vector2Int(newX, newY));
             }
@@ -101,8 +105,19 @@ public class ProceduralMazeGen : MonoBehaviour
             }
         }
 
-        _map[mapHeight - 2, mapWidth - 3] = 0;
-        _map[mapHeight - 1, mapWidth - 3] = 0;
+        // _map[mapHeight - 2, mapWidth - 3] = 3;
+        _map[mapHeight - 1, mapWidth - 3] = 3;
+
+        int newWallcnt = CountWalls();
+
+        if (_targetWallCnt == 0)
+        {
+            _targetWallCnt = newWallcnt;
+        }
+        else
+        {
+            BalanceWalls(newWallcnt);
+        }
     }
 
     private void DrawMap()
@@ -113,9 +128,14 @@ public class ProceduralMazeGen : MonoBehaviour
             {
                 Vector3 wallPos = new Vector3(x, wallSpawnHeight, y);
                 Vector3 floorPos = new Vector3(x, floorSpawnHeight, y);
+                Vector3 goalPos = new Vector3(x, floorSpawnHeight, y);
 
                 Instantiate(floorPrefab, floorPos, Quaternion.identity, transform);
 
+                if (_map[y, x] == 3)
+                {
+                    Instantiate(goalPrefab, goalPos, Quaternion.identity, transform);
+                }
                 if (_map[y, x] == 1)
                 {
                     _wallPositions.Add(wallPos);
@@ -144,6 +164,43 @@ public class ProceduralMazeGen : MonoBehaviour
 
             yield return new WaitForSeconds(0.01f);
         }
+    }
+
+    private void BalanceWalls(int wallCnt)
+    {
+        Random random =  new Random();
+
+        if (wallCnt == _targetWallCnt)
+        {
+            return;
+        }
+
+        if (wallCnt < _targetWallCnt)
+        {
+            
+        }
+    }
+
+    private int CountNearbyWalls(int x, int y)
+    {
+        return 0;
+    }
+
+    private int CountWalls()
+    {
+        int cnt = 0;
+        for (int i = 0; i < mapHeight; i++)
+        {
+            for (int j = 0; j < mapWidth; j++)
+            {
+                if (_map[i, j] == 1)
+                {
+                    cnt++;
+                }
+            }
+        }
+
+        return cnt;
     }
 
     private bool IsInBounds(int y, int x)
